@@ -2,8 +2,10 @@ package com.suiveg.utils.encryption;
 
 import com.suiveg.utils.abs.AbstractUtil;
 import com.suiveg.utils.encryption.algorithms.Crypt;
+import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
 import org.apache.commons.lang.StringUtils;
 
+import java.io.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -61,6 +63,37 @@ public class EncryptionUtils extends AbstractUtil {
     }
 
     /**
+     * Encode or Decode with base64.
+     *
+     * @param string the string to parse
+     * @param encode true|false - false == decode
+     * @return byte array
+     * @throws Exception
+     */
+    public static byte[] encodeWithBase64(final String string, boolean encode) throws Exception {
+        byte[] bytesOfInput = string.getBytes();
+        if(encode) {
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+            OutputStream b64os = MimeUtility.encode(
+                    outputStream,
+                    EncryptionType.BASE_64.toString());
+            b64os.write(bytesOfInput);
+            b64os.close();
+            return outputStream.toByteArray();
+        }else{
+            ByteArrayInputStream inputStream = new ByteArrayInputStream(bytesOfInput);
+            InputStream b64is = MimeUtility.decode(
+                    inputStream,
+                    EncryptionType.BASE_64.toString());
+            byte[] tmp = new byte[bytesOfInput.length];
+            int n = b64is.read(tmp);
+            byte[] res = new byte[n];
+            System.arraycopy(tmp, 0, res, 0, n);
+            return res;
+        }
+     }
+
+    /**
      * Simple byte array to hex byte array converter
      *
      * @param sentence _
@@ -115,7 +148,8 @@ public class EncryptionUtils extends AbstractUtil {
     public enum EncryptionType {
         MD_5("MD5"),
         SHA_1("SHA-1"),
-        MD_2("MD2");
+        MD_2("MD2"),
+        BASE_64("base64");
 
         private String encryptionType;
 

@@ -6,18 +6,16 @@ import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
+import javax.net.ssl.HttpsURLConnection;
 import java.io.*;
-import java.net.ConnectException;
-import java.net.HttpURLConnection;
-import java.net.URI;
-import java.net.URL;
+import java.net.*;
 import java.util.Date;
 
 import static com.suiveg.utils.encryption.EncryptionUtils.convertToHex;
+import static com.suiveg.utils.encryption.EncryptionUtils.encodeWithBase64;
 import static com.suiveg.utils.file.FileUtils.getFileOutputStream;
 
 /**
- *
  * @author <a href="mailto:vegaasen@gmail.com">Vegard Aasen</a>
  * @author <a href="mailto:marius.kristensen@gmail.com">Marius Kristensen</a>
  * @version see system.properties
@@ -26,7 +24,9 @@ import static com.suiveg.utils.file.FileUtils.getFileOutputStream;
 public class HttpUtils extends AbstractUtil {
 
     private static final Logger LOGGER = Logger.getLogger(HttpUtils.class);
-    private static final String URL_SLASH = "/";
+    private static final String
+            URL_SLASH = "/",
+            DEFAULT_PWD_UNAME_SEPERATOR = ":";
 
     public static synchronized File getFileFromURL(final URL sourceUrl, File target)
             throws IOException, IllegalArgumentException {
@@ -58,11 +58,11 @@ public class HttpUtils extends AbstractUtil {
     }
 
     public static String getFileName(final URL url) throws NullPointerException {
-        if(verifyNotNull(url)) {
+        if (verifyNotNull(url)) {
             String path = url.getFile();
-            if(StringUtils.isNotEmpty(path)) {
+            if (StringUtils.isNotEmpty(path)) {
                 String[] splittedPath = path.split(URL_SLASH);
-                if(splittedPath.length>0) {
+                if (splittedPath.length > 0) {
                     return splittedPath[splittedPath.length - 1];
                 }
             }
@@ -71,16 +71,16 @@ public class HttpUtils extends AbstractUtil {
     }
 
     public static String getFileExtension(final URL url) throws NullPointerException {
-        if(verifyNotNull(url)) {
+        if (verifyNotNull(url)) {
             String location = (
-                    (StringUtils.isNotEmpty(url.getFile()))?
-                            url.getFile():
-                            (StringUtils.isNotEmpty(url.getPath())?
-                                    url.getPath():
+                    (StringUtils.isNotEmpty(url.getFile())) ?
+                            url.getFile() :
+                            (StringUtils.isNotEmpty(url.getPath()) ?
+                                    url.getPath() :
                                     ""));
-            if(StringUtils.isNotBlank(location)) {
-                if(location.contains(".")) {
-                    return location.substring(location.lastIndexOf("."), location.length()-1);
+            if (StringUtils.isNotBlank(location)) {
+                if (location.contains(".")) {
+                    return location.substring(location.lastIndexOf("."), location.length() - 1);
                 }
             }
             throw new Error("Unable to parse path, it might be null or empty. " +
@@ -89,11 +89,64 @@ public class HttpUtils extends AbstractUtil {
         throw new NullPointerException(E_OBJECT_WAS_NULL);
     }
 
+    /**
+     * Provides support to get the inputstream from a url providing a username, password
+     *
+     * @param username Username
+     * @param password Password
+     * @param url URL
+     * @return InputStream from result
+     */
+    public static InputStream getInputStreamFromUrl(final String username, final String password, final URL url) {
+        if (verifyNotNull(username, password, url)) {
+            if (StringUtils.isNotEmpty(username) && StringUtils.isNotEmpty(password)) {
+                try {
+                    final URLConnection connection = url.openConnection();
+                    String encodedUsernamePassword = new String(
+                            encodeWithBase64(username + DEFAULT_PWD_UNAME_SEPERATOR + password, true)
+                    );
+
+                    if (connection instanceof HttpsURLConnection) {
+                        HttpsURLConnection httpsURLConnection = (HttpsURLConnection) connection;
+                        httpsURLConnection.setRequestProperty("Authorization",
+                                                        String.format("Basic %s", encodedUsernamePassword));
+                        httpsURLConnection.setRequestMethod("GET");
+                        httpsURLConnection.setDoInput(true);
+                        httpsURLConnection.setDoOutput(true);
+                        httpsURLConnection.setUseCaches(false);
+                        httpsURLConnection.connect();
+                        return httpsURLConnection.getInputStream();
+                    } else if (connection instanceof HttpURLConnection) {
+                        HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
+                        httpURLConnection.setRequestProperty("Authorization",
+                                                        String.format("Basic %s", encodedUsernamePassword));
+                        httpURLConnection.setRequestMethod("GET");
+                        httpURLConnection.setDoInput(true);
+                        httpURLConnection.setDoOutput(true);
+                        httpURLConnection.setUseCaches(false);
+                        httpURLConnection.connect();
+                        return httpURLConnection.getInputStream();
+                    }
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    throw new UnknownError("Unable to recieve username/password.");
+                }
+            }
+            throw new IllegalArgumentException("Username or password is empty or null.");
+        }
+        throw new IllegalArgumentException("Missing required arguments.");
+    }
+
     private static File getFileUsingURL(URL sourceUrl, File target) throws IOException {
         if (verifyNull(target)) {
-            target = new File(TEMP_DIRECTORY + File.separator + convertToHex(
-                    (DEFAULT_STRING + new Date().getTime()).getBytes())
-                    .toString());
+            target = new File(
+                    TEMP_DIRECTORY +
+                    File.separator +
+                    new String(convertToHex((
+                            DEFAULT_STRING +
+                            new Date().getTime()
+                    ).getBytes()))
+            );
         }
         InputStream urlStream = sourceUrl.openStream();
         FileOutputStream targetStream = getFileOutputStream(target);
