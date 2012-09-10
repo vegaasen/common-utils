@@ -20,10 +20,12 @@ import java.util.ResourceBundle;
  * @version see system.properties
  * @since 0.2-SNAPSHOT
  */
-public class PropUtils {
+public final class PropUtils {
 
     private static final Logger LOGGER = Logger.getLogger(PropUtils.class);
     private static final String SUFFIX = ".properties";
+
+    private PropUtils() {}
 
     /**
      * @param propertiesFileName Properties File Name - e.g system.properties

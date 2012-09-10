@@ -2,8 +2,8 @@ package com.suiveg.utils.http;
 
 import com.suiveg.utils.abs.AbstractUtil;
 import com.suiveg.utils.http.model.HttpStatusCodes;
+import com.suiveg.utils.string.StringUtils;
 import org.apache.commons.io.IOUtils;
-import org.apache.commons.lang.StringUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
@@ -23,10 +23,12 @@ import static com.suiveg.utils.file.FileUtils.getFileOutputStream;
  * @version see system.properties
  * @since 0.2
  */
-public class HttpUtils extends AbstractUtil {
+public final class HttpUtils extends AbstractUtil {
 
     private static final Logger LOGGER = Logger.getLogger(HttpUtils.class);
     private static final String URL_SLASH = "/";
+
+    private HttpUtils() {}
 
     public static synchronized File getFileFromURL(final URL sourceUrl, File target)
             throws IOException, IllegalArgumentException {

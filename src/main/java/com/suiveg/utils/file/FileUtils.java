@@ -18,18 +18,17 @@ import java.util.List;
  * -Verifications of file
  * -FileToByte
  * -Size
- *
+ * <p/>
  * This is constantly under development.
- *
+ * <p/>
  * Note: Not Java 1.7 / Java 7 certified. An overloading class for using NIO will be written on the side
- *
  *
  * @author <a href="mailto:vegaasen@gmail.com">Vegard Aasen</a>
  * @author <a href="mailto:marius.kristensen@gmail.com">Marius Kristensen</a>
  * @version see system.properties
  * @since 0.1
  */
-public class FileUtils extends AbstractUtil {
+public final class FileUtils extends AbstractUtil {
 
     private static final Logger LOGGER = Logger.getLogger(FileUtils.class);
 
@@ -51,16 +50,16 @@ public class FileUtils extends AbstractUtil {
     /**
      * Get the filename of a file
      *
-     * @param file File to investigate
+     * @param file              File to investigate
      * @param omitFileExtension if set to false, shows the extension and vice versa
      * @return fileName
      * @throws NullPointerException _
-     * @throws IOException _
+     * @throws IOException          _
      */
     public static String getFileName(final File file, final boolean omitFileExtension)
-            throws NullPointerException, IOException{
-        if(verifyNotNull(file)) {
-            if(file.exists()) {
+            throws NullPointerException, IOException {
+        if (verifyNotNull(file)) {
+            if (file.exists()) {
                 String fileName = file.getName();
                 return generateFileName(omitFileExtension, fileName);
             }
@@ -72,14 +71,14 @@ public class FileUtils extends AbstractUtil {
     /**
      * Get filename based on a path/filename
      *
-     * @param fileName path/filname
+     * @param fileName          path/filname
      * @param omitFileExtension if set to false, shows the extension and vice versa
      * @return
      * @throws NullPointerException
      */
     public static String getFileName(final String fileName, final boolean omitFileExtension)
             throws NullPointerException {
-        if(verifyNotNull(fileName)) {
+        if (verifyNotNull(fileName)) {
             return generateFileName(omitFileExtension, fileName);
         }
         throw new NullPointerException(String.format(E_OBJECT_WAS_NULL));
@@ -90,7 +89,7 @@ public class FileUtils extends AbstractUtil {
      *
      * @param file the file in question
      * @return FileOutputStream
-     * @throws IOException _
+     * @throws IOException          _
      * @throws NullPointerException _
      */
     public static FileOutputStream getFileOutputStream(final File file)
@@ -122,7 +121,7 @@ public class FileUtils extends AbstractUtil {
      *
      * @param file the file in question
      * @return FileInputStream
-     * @throws IOException _
+     * @throws IOException          _
      * @throws NullPointerException _
      */
     public static FileInputStream getFileInputStream(final File file)
@@ -147,8 +146,8 @@ public class FileUtils extends AbstractUtil {
     /**
      * Get the size of a file as Human Readable Size
      *
-     * @param fileSize filesize
-     * @param fileSizeType the conversion-size
+     * @param fileSize       filesize
+     * @param fileSizeType   the conversion-size
      * @param omitFormatType if to omit the formatType (e.g KB, MB, GB etc)
      * @return the size
      * @throws NullPointerException
@@ -184,7 +183,7 @@ public class FileUtils extends AbstractUtil {
      *
      * @param file the file in question
      * @throws NullPointerException _
-     * @throws IOException _
+     * @throws IOException          _
      */
     public static void setLastModifiedForFile(final File file)
             throws NullPointerException, IOException {
@@ -207,10 +206,10 @@ public class FileUtils extends AbstractUtil {
     /**
      * Read a file to a string
      *
-     * @param file _
+     * @param file     _
      * @param encoding the encoding type
      * @return _
-     * @throws IOException _
+     * @throws IOException           _
      * @throws NoSuchObjectException _
      */
     public static String readFileToString(final File file, final FileEncoding encoding)
@@ -269,7 +268,7 @@ public class FileUtils extends AbstractUtil {
     /**
      * Read size of a whole directory
      *
-     * @param directory _
+     * @param directory    _
      * @param fileSizeType the file size type (e.g KB, MB, GB etc)
      * @return size
      * @throws IllegalArgumentException
@@ -320,6 +319,7 @@ public class FileUtils extends AbstractUtil {
 
     /**
      * Compare a file to a long (is newer than)
+     *
      * @param file _
      * @param time timeInLong
      * @return true/false
@@ -342,10 +342,10 @@ public class FileUtils extends AbstractUtil {
      * @throws Exception _
      */
     public static boolean createFolder(final File folder) throws Exception {
-        if(verifyNotNull(folder)) {
-            if(folder.exists() && !folder.isDirectory()) {
+        if (verifyNotNull(folder)) {
+            if (folder.exists() && !folder.isDirectory()) {
                 throw new Exception(String.format("File %s exists.", folder.getName()));
-            }else{
+            } else {
                 return folder.mkdir();
             }
         }
@@ -361,25 +361,25 @@ public class FileUtils extends AbstractUtil {
      */
     public static boolean deleteIfFileExists(final File file)
             throws NullPointerException {
-        if(verifyNotNull(file)) {
+        if (verifyNotNull(file)) {
             return file.exists() && file.delete();
         }
         throw new NullPointerException(E_OBJECT_WAS_NULL);
     }
 
     private static String generateFileName(boolean omitFileExtension, String fileName) {
-        if(omitFileExtension) {
-            if(fileName.contains(".")) {
-                if(fileName.lastIndexOf(".")!=fileName.length()) {
-                    fileName = (fileName.substring(fileName.lastIndexOf("."), (fileName.length()-1)));
+        if (omitFileExtension) {
+            if (fileName.contains(".")) {
+                if (fileName.lastIndexOf(".") != fileName.length()) {
+                    fileName = (fileName.substring(fileName.lastIndexOf("."), (fileName.length() - 1)));
                 }
                 return fileName;
-            }else{
+            } else {
                 return "Your File Does Not Contain Any Extensions. \n" +
                         "Please set omitFileExtensions-flag to false. \n" +
                         "FileName: " + fileName;
             }
-        }else{
+        } else {
             return fileName;
         }
     }

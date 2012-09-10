@@ -1,6 +1,6 @@
 package com.suiveg.utils.http.handlers;
 
-import org.apache.commons.lang.StringUtils;
+import com.suiveg.utils.string.StringUtils;
 import org.apache.log4j.Logger;
 
 import javax.net.ssl.HostnameVerifier;

@@ -2,7 +2,11 @@
 
 ##Introduction
 
-Common utils was created/born as a project in January 2012 when Marius and Vegard found out that we way too often wrote the same code over and over again in many different projects. To be a bit more efficient we started to create a small library that had all this functionality built in. This has proven to be a great idea, and we're using this library many places right now. 
+Common utils was created/born as a project in January 2012 when Marius and Vegard found out that we way too often wrote the same code over and over again in many different projects. To be a bit more efficient we started to create a small library that had all this functionality built in. This has proven to be a great idea, and we're using this library many places right now.
+
+New to version 2 will be the removal of all refering jars. We will provide all access (where possible) ourselves. This is to minimalize the possibility of jar-collide when this jar is beeing used in a e.g project.
+
+##Contributions
 
 If you like it, why not just fork the ever on-going "project", and submit your own additions? 
 
@@ -34,12 +38,15 @@ New:
 * EncryptionUtils
 * SSHUtils
 * PropUtils
+* StringUtils
+* IOUtils -- COMING SOON!
 
 Changed:
 
 * FileUtils
 * ImageUtils
 * FTPUtils
+* Removing all of the commons-utils delivered by the Apache Commons-project. This is due to unwanted dependencies in the pom.xml for projects where this is already included (jar/java-version-mismatches)
 
 New additions:
 

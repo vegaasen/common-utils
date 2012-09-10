@@ -2,7 +2,7 @@ package com.suiveg.utils.encryption;
 
 import com.suiveg.utils.abs.AbstractUtil;
 import com.suiveg.utils.encryption.algorithms.Crypt;
-import org.apache.commons.lang.StringUtils;
+import com.suiveg.utils.string.StringUtils;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

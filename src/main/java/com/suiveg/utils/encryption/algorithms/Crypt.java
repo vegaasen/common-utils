@@ -1,6 +1,6 @@
 package com.suiveg.utils.encryption.algorithms;
 
-import org.apache.commons.lang.StringUtils;
+import com.suiveg.utils.string.StringUtils;
 
 import java.util.Random;
 
