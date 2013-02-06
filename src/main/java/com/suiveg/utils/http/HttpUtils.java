@@ -12,7 +12,7 @@ import java.net.*;
 import java.util.Date;
 
 import static com.suiveg.utils.encryption.EncryptionUtils.convertToHex;
-import static com.suiveg.utils.encryption.EncryptionUtils.encodeWithBase64;
+import static com.suiveg.utils.encryption.EncryptionUtils.base64;
 import static com.suiveg.utils.file.FileUtils.getFileOutputStream;
 
 /**
@@ -105,7 +105,7 @@ public final class HttpUtils extends AbstractUtil {
                 try {
                     final URLConnection connection = url.openConnection();
                     String encodedUsernamePassword = new String(
-                            encodeWithBase64(username + DEFAULT_PWD_UNAME_SEPERATOR + password, true)
+                            base64(username + DEFAULT_PWD_UNAME_SEPERATOR + password, true)
                     );
 
                     if (connection instanceof HttpsURLConnection) {

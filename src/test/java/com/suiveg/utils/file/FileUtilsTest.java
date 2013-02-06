@@ -57,7 +57,7 @@ public class FileUtilsTest {
         File mockedFile = createMock(File.class);
         Date mockedDate = createMock(Date.class);
 
-        fileUtils = new FileUtils();
+        fileUtils = FileUtils.getInstance();
 
         PowerMockito.mockStatic(FileUtils.class);
 

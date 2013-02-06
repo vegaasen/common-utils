@@ -6,6 +6,7 @@ import com.suiveg.utils.string.StringUtils;
 import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
 
 import java.io.*;
+import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
@@ -17,10 +18,14 @@ import java.security.NoSuchAlgorithmException;
  * @version see system.properties
  * @since 0.1
  */
-public class EncryptionUtils extends AbstractUtil {
+public final class EncryptionUtils extends AbstractUtil {
+
+    public static final String
+            ENC_UTF_8 = "UTF-8",
+            ENC_ISO_8851_1 = "ISO-8859-1";
 
     private EncryptionUtils() {}
-
+    
     /**
      * Generate a Crypt hashed string based on a salt and a string (usually a password)
      * This can be used together with e.g generating a Apache HTTPD password for Authentication
@@ -65,12 +70,14 @@ public class EncryptionUtils extends AbstractUtil {
     /**
      * Encode or Decode with base64.
      *
+     * todo: not working as intended?
+     *
      * @param string the string to parse
      * @param encode true|false - false == decode
      * @return byte array
-     * @throws Exception
+     * @throws Exception _
      */
-    public static byte[] encodeWithBase64(final String string, boolean encode) throws Exception {
+    public static byte[] base64(final String string, boolean encode) throws Exception {
         byte[] bytesOfInput = string.getBytes();
         if(encode) {
             ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
@@ -93,6 +100,21 @@ public class EncryptionUtils extends AbstractUtil {
         }
      }
 
+    public static String urlEncode(final String string, String encoding) {
+        if(verifyNotNull(string)) {
+            if(encoding==null || encoding.isEmpty()) {
+                encoding = ENC_UTF_8;
+            }
+            try {
+                return URLEncoder.encode(string, encoding);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            return string;
+        }
+        throw new IllegalArgumentException("");
+    }
+
     /**
      * Simple byte array to hex byte array converter
      *
@@ -104,7 +126,7 @@ public class EncryptionUtils extends AbstractUtil {
             throws NullPointerException {
         if (verifyNotNull(sentence)) {
             if(sentence.length>0) {
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 for (byte b : sentence) {
                     sb.append(
                             Integer.toString(
@@ -131,7 +153,7 @@ public class EncryptionUtils extends AbstractUtil {
             throws NullPointerException {
         if (verifyNotNull(hexSentence)) {
             if(StringUtils.isNotBlank(hexSentence)) {
-                StringBuffer sb = new StringBuffer();
+                StringBuilder sb = new StringBuilder();
                 for (int i = 0; i < hexSentence.length() - 1; i += 2) {
                     String output = hexSentence.substring(i, (i + 2));
                     int decimal = Integer.parseInt(output, 16);

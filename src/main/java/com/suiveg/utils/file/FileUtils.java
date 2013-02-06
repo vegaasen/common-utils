@@ -5,6 +5,7 @@ import org.apache.commons.io.IOUtils;
 import org.apache.log4j.Logger;
 
 import java.io.*;
+import java.net.URL;
 import java.rmi.NoSuchObjectException;
 import java.util.Arrays;
 import java.util.Date;
@@ -39,12 +40,32 @@ public final class FileUtils extends AbstractUtil {
 
     private static final String NAN = "NaN";
     private static final String NAF = "NaF";
+    private static final String EMPTY_STRING = "";
 
     public static final boolean HIDE_SIZE_TYPE = Boolean.TRUE;
     public static final boolean SHOW_SIZE_TYPE = Boolean.FALSE;
+    private static FileUtils fileUtils;
 
-    public FileUtils() {
-        super();
+    private FileUtils(){}
+
+    public static FileUtils getInstance() {
+        if(fileUtils==null) {
+            fileUtils = new FileUtils();
+        }
+        return fileUtils;
+    }
+
+    /**
+     * Get the full path to a local file
+     * @param s file, e.g system.properties
+     * @return String containing the full path
+     */
+    public String getFullPathToLocalFile(final String s) {
+        final URL resource = ClassLoader.getSystemClassLoader().getResource(s);
+        if(resource==null) {
+            return EMPTY_STRING;
+        }
+        return resource.getFile();
     }
 
     /**
@@ -73,8 +94,8 @@ public final class FileUtils extends AbstractUtil {
      *
      * @param fileName          path/filname
      * @param omitFileExtension if set to false, shows the extension and vice versa
-     * @return
-     * @throws NullPointerException
+     * @return _
+     * @throws NullPointerException _
      */
     public static String getFileName(final String fileName, final boolean omitFileExtension)
             throws NullPointerException {

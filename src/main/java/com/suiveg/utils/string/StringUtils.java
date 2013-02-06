@@ -16,8 +16,7 @@ import java.util.List;
  */
 public final class StringUtils {
 
-    private StringUtils() {
-    }
+    private StringUtils() {}
 
     public static boolean equals(final String s1, final String s2) {
         if (s1 == null) {
