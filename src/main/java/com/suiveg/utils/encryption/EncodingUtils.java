@@ -5,7 +5,9 @@ import com.suiveg.utils.encryption.algorithms.Crypt;
 import com.suiveg.utils.string.StringUtils;
 import com.sun.xml.internal.messaging.saaj.packaging.mime.internet.MimeUtility;
 
+import javax.xml.bind.DatatypeConverter;
 import java.io.*;
+import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -18,13 +20,13 @@ import java.security.NoSuchAlgorithmException;
  * @version see system.properties
  * @since 0.1
  */
-public final class EncryptionUtils extends AbstractUtil {
+public final class EncodingUtils extends AbstractUtil {
 
     public static final String
-            ENC_UTF_8 = "UTF-8",
-            ENC_ISO_8851_1 = "ISO-8859-1";
+            UTF_8 = "UTF-8",
+            ISO_8851_1 = "ISO-8859-1";
 
-    private EncryptionUtils() {}
+    private EncodingUtils() {}
     
     /**
      * Generate a Crypt hashed string based on a salt and a string (usually a password)
@@ -70,7 +72,7 @@ public final class EncryptionUtils extends AbstractUtil {
     /**
      * Encode or Decode with base64.
      *
-     * todo: not working as intended?
+     * todo: not working as intended?!
      *
      * @param string the string to parse
      * @param encode true|false - false == decode
@@ -100,10 +102,28 @@ public final class EncryptionUtils extends AbstractUtil {
         }
      }
 
+    public static String base64Encode(final String string) {
+        if(verifyNotNull(string)) {
+            try {
+                return DatatypeConverter.printBase64Binary(string.getBytes(UTF_8));
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+        }
+        throw new IllegalArgumentException("");
+    }
+
+    public static byte[] base64Decode(final String string) {
+        if(verifyNotNull(string)) {
+            return DatatypeConverter.parseBase64Binary(string);
+        }
+        throw new IllegalArgumentException("");
+    }
+
     public static String urlEncode(final String string, String encoding) {
         if(verifyNotNull(string)) {
             if(encoding==null || encoding.isEmpty()) {
-                encoding = ENC_UTF_8;
+                encoding = UTF_8;
             }
             try {
                 return URLEncoder.encode(string, encoding);
@@ -114,6 +134,22 @@ public final class EncryptionUtils extends AbstractUtil {
         }
         throw new IllegalArgumentException("");
     }
+
+    public static String urlDecode(final String string, String encoding) {
+        if(verifyNotNull(string)) {
+            if(encoding==null || encoding.isEmpty()) {
+                encoding = UTF_8;
+            }
+            try {
+                return URLDecoder.decode(string, encoding);
+            } catch (UnsupportedEncodingException e) {
+                e.printStackTrace();
+            }
+            return string;
+        }
+        throw new IllegalArgumentException("");
+    }
+
 
     /**
      * Simple byte array to hex byte array converter

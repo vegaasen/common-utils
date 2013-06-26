@@ -11,8 +11,8 @@ import java.io.*;
 import java.net.*;
 import java.util.Date;
 
-import static com.suiveg.utils.encryption.EncryptionUtils.convertToHex;
-import static com.suiveg.utils.encryption.EncryptionUtils.base64;
+import static com.suiveg.utils.encryption.EncodingUtils.convertToHex;
+import static com.suiveg.utils.encryption.EncodingUtils.base64;
 import static com.suiveg.utils.file.FileUtils.getFileOutputStream;
 
 /**
